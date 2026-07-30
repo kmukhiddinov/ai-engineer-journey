@@ -74,3 +74,7 @@ guessing.
 The general defense against all of this comes down to three things:
 verification, managing context, and checkpoints along the way instead
 of waiting until the end to check the work.
+
+## Source:
+
+https://anthropic.skilljar.com/ai-capabilities-and-limitations
