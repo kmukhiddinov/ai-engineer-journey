@@ -10,3 +10,7 @@ Quick intro course from Anthropic, general overview of working with Claude.
 ## Takeaway:
 
 Solid entry point from zero, but basic level, no depth on capabilities/limitations (that's the next course).
+
+## Source:
+
+https://anthropic.skilljar.com/claude-101
