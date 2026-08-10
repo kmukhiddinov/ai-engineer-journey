@@ -59,4 +59,20 @@ A concrete model grader implementation: give the model a role ("you are an exper
 
 ---
 
+## prompt-engineering-techniques.ipynb
+
+Mini project: a prompt that takes a person's height, weight, goal, and dietary restrictions, and outputs a structured diet/fitness plan.
+
+First eval scored 3/10. The prompt was rough and the model choice was weaker, so before touching anything, the initial prompt and evaluation criteria got written down first. From there, techniques got applied one at a time, checking the score after each pass to see if it actually moved.
+
+**Be clear and direct.** Clear means simple language, stating the task explicitly, leading with a plain statement of what the model needs to do. Direct means using instructions, not questions, action verbs like "write," "create," "generate." Example, clear: "Write 3 paragraphs about how solar panels work." Direct: "Identify three countries that use geothermal energy. Include generation stats for each."
+
+**Be specific.** List the qualities the output should have, then give the steps the model should follow, guidelines or a numbered process. Close to a default technique, worth using on almost every prompt, especially for troubleshooting complex problems, decision-making scenarios, or critical thinking tasks.
+
+**Use XML tags.** Wrap distinct chunks of content so Claude can tell them apart, `<sales_records>`, `<example>`, `<my_code>`, whatever fits the content.
+
+**Provide examples.** Give sample input and sample output pairs, wrapped in XML tags. For a tweet sentiment classifier: `<sample_input>Great game tonight!</sample_input>` paired with `<sample_output>Positive</sample_output>`. Comments can flag edge cases too, like warning the model to watch for sarcasm, for example "oh yeah, I really needed a flight delay tonight, excellent!" reads positive on the surface but is negative. For harder cases, give an `<ideal_output>` and explain why it's the ideal one, not just what it is.
+
+---
+
 More notebooks coming, will keep updating this README as I go.
