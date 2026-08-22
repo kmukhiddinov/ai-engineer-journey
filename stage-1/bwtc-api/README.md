@@ -75,4 +75,16 @@ First eval scored 3/10. The prompt was rough and the model choice was weaker, so
 
 ---
 
+## implementing-multiple-tools.ipynb & sending-tool-results.ipynb & web-search-tool.ipynb
+
+Claude only knows what it was trained on. Anything outside that, current data, real-time information, actions in the outside world, requires a tool.
+
+**Setting up a tool.** Tool use starts with writing an actual function that performs the work, then writing a JSON schema that describes it. The schema is not tied to any specific model, it is a general data validation format. It needs a name, a description, and an input schema. The description matters more than it seems: a vague description gives Claude a vague sense of when to call the tool, so it needs to spell out what the tool does, when to use it, and what it returns.
+
+**How the call works.** Once the schema is in place, calling Claude works through multi-block messages. Claude's response comes back as a content list that can include a text block and a tool use block. The tool use block carries the tool's id, name, and the input Claude wants to call it with. The full conversation history has to be passed back on the next request, and the next user message needs to include a tool result block that matches that tool use id, so Claude can connect the call to its result. Tool results get serialized as strings even when the underlying value is a number or boolean.
+
+**Multiple tool calls.** Real conversations often need more than one tool call in a row, so the message handling has to support multiple tool use blocks in a single response, run each one, and return all the tool result blocks together.
+
+**Server-side vs client-side tools.** Not all tools work the same way underneath. Web search is server-side: Claude runs the search itself and hands back a finished result, no implementation needed beyond passing the schema. Text editor is client-side, same as any custom tool: Claude only requests the operation, and the actual read and write logic has to be written and executed on your end.
+
 More notebooks coming, will keep updating this README as I go.
