@@ -87,4 +87,32 @@ Claude only knows what it was trained on. Anything outside that, current data, r
 
 **Server-side vs client-side tools.** Not all tools work the same way underneath. Web search is server-side: Claude runs the search itself and hands back a finished result, no implementation needed beyond passing the schema. Text editor is client-side, same as any custom tool: Claude only requests the operation, and the actual read and write logic has to be written and executed on your end.
 
+## 001_chunking.ipynb
+
+RAG starts with breaking a source document into chunks, the hardest part of the whole pipeline since how a document gets divided shapes everything downstream. Three chunking strategies apply here.
+
+**Size based** divides text into strings of equal length. Downsides: each chunk can get cut off mid-thought and loses surrounding context. The workaround is giving neighboring chunks some overlap, which creates a bit of duplication but keeps more context inside each piece.
+
+**Structure based** divides text by its existing structure, headers, paragraphs, sections. Sounds clean in theory, but implementation gets shaky whenever the source text doesn't reliably follow that structure.
+
+**Semantic based** groups related sentences or sections together. Requires understanding individual sentences, so it's more computationally expensive, but produces more relevant chunks.
+
+Which method wins depends entirely on the source material. Chunking by character count ends up working for the vast majority of cases.
+
+## 002_embeddings.ipynb
+
+Semantic search finds chunks related to a user's question by using text embeddings, feeding each chunk into an embedding model that turns it into a list of numbers between -1 and 1. Each number scores some quality of the text, though which quality maps to which number isn't something you can pin down directly.
+
+The full RAG flow: chunk the source text, generate embeddings for each chunk, normalize them (handled automatically, and visualizable on a unit circle), then store everything in a vector database, a database built specifically for storing and comparing long lists of numbers like embeddings.
+
+A user's query gets embedded the same way, then the vector database returns whichever stored vector sits closest to it. Closeness is measured with cosine similarity, the cosine of the angle between the query vector and each stored embedding. A value close to -1 means unrelated. Distance is calculated as 1 minus similarity: same direction scores 0.0, perpendicular scores 1.0, completely opposite scores 2.0. Once the closest chunk is found, it gets added into the prompt alongside the user's question before that prompt goes to Claude.
+
+## hybrid.ipynb
+
+Semantic search (embeddings) is strong at context and meaning, lexical search is strong at exact word matches. Combining both gives a better balance than either alone.
+
+Lexical search here uses BM25 (best match 25, the 25th variation of the original formula). It tokenizes the user's query, checks how often each term shows up across all documents, and weights rarer terms higher. The chunk that uses the most high-weighted terms wins.
+
+Combining semantic and lexical search into one pipeline needs a retriever, a class wrapping both the vector index and the BM25 index. Results from each get merged using reciprocal rank fusion, RRF_score(d) = Σ 1/(k + rank_i(d)), where k is a constant, 60 is common but a smaller value like 1 was used here for clearer results. Higher RRF score means more relevant chunk.
+
 More notebooks coming, will keep updating this README as I go.
