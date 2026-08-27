@@ -87,6 +87,14 @@ Claude only knows what it was trained on. Anything outside that, current data, r
 
 **Server-side vs client-side tools.** Not all tools work the same way underneath. Web search is server-side: Claude runs the search itself and hands back a finished result, no implementation needed beyond passing the schema. Text editor is client-side, same as any custom tool: Claude only requests the operation, and the actual read and write logic has to be written and executed on your end.
 
+## RAG
+
+RAG breaks a large document into chunks first, things like strategy outlook, balance sheet, risk factors, so a huge block of text becomes smaller labeled pieces. A user's question gets matched to the most relevant chunk, which then goes into the prompt alongside the question. Asking about risks pulls the risk factors chunk, not the whole document.
+
+Upsides: scales well, keeps the model focused, smaller prompts cost less, and it works across multiple documents. Downsides: needs a preprocessing and search step to find the right chunk, a chunk might miss relevant content outside it, and there's no single best way to chunk a document.
+
+Three chunking strategies: **size based** splits text into equal-length strings, simple but risks cutting a chunk mid-thought, fixed with overlap between chunks. **Structure based** splits by headers or sections, clean when the source is consistent, shaky when it isn't. **Semantic based** groups related sentences together, more compute but more relevant chunks. Character count ends up working for most cases regardless of source.
+
 ## 001_chunking.ipynb
 
 RAG starts with breaking a source document into chunks, the hardest part of the whole pipeline since how a document gets divided shapes everything downstream. Three chunking strategies apply here.
