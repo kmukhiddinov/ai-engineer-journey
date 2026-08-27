@@ -93,8 +93,6 @@ RAG breaks a large document into chunks first, things like strategy outlook, bal
 
 Upsides: scales well, keeps the model focused, smaller prompts cost less, and it works across multiple documents. Downsides: needs a preprocessing and search step to find the right chunk, a chunk might miss relevant content outside it, and there's no single best way to chunk a document.
 
-Three chunking strategies: **size based** splits text into equal-length strings, simple but risks cutting a chunk mid-thought, fixed with overlap between chunks. **Structure based** splits by headers or sections, clean when the source is consistent, shaky when it isn't. **Semantic based** groups related sentences together, more compute but more relevant chunks. Character count ends up working for most cases regardless of source.
-
 ## 001_chunking.ipynb
 
 RAG starts with breaking a source document into chunks, the hardest part of the whole pipeline since how a document gets divided shapes everything downstream. Three chunking strategies apply here.
